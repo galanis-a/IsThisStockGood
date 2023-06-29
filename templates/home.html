@@ -1,13 +1,18 @@
 {% extends "base.html" %}
     {% include "loading.html" %}
 	{% block bodycontent %}
-		{% include "searchbox.html" %}
-    {% include "meaning.html" %}
-    {% include "moat.html" %}
-    {% include "management.html" %}
-    {% include "margin_of_safety.html" %}
-    {% include "payback_time.html" %}
-    {% include "market_cap.html" %}
+        <aside class="col-md-3">
+        {% include "wathlist.html" %}
+        </aside>
+        <main class="col-md-9">
+            {% include "searchbox.html" %}
+            {% include "meaning.html" %}
+            {% include "moat.html" %}
+            {% include "management.html" %}
+            {% include "margin_of_safety.html" %}
+            {% include "payback_time.html" %}
+            {% include "market_cap.html" %}
+        </main>
     <script>
       // Initialize all popover elements for the Bootstrap plugin.
       $(document).ready(function(){

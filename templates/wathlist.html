@@ -1,20 +1,20 @@
-<div class="container pt-4" id="searchbox">
-  <form id="searchboxform" action="/search" method="post">
+<div class="container pt-4" id="watchlist">
+  <form id="watchlistform" action="/watchlist" method="post">
     <div class="form-group row justify-content-center">
-      <div class="col-md-3 nopadding">
+      <div class="col-md-9 nopadding">
         <input
             type="text"
             class="form-control"
-            id="ticker"
+            id="watchlist-ticker"
             placeholder="Ticker Symbol"
             maxlength=5
             onkeydown="return validateInput(event)"/>
       </div>
-      <div class="col-md-1 nopadding">
+      <div class="col-md-3 nopadding">
         <input
             type="submit"
-            value="Analyze"
-            class="btn btn-raised btn-md btn-warning"
+            value="Add"
+            class="btn btn-raised btn-md btn-primary"
         >
       </div>
     </div>
@@ -22,7 +22,7 @@
 </div>
 
 <script>
-document.querySelector("#ticker").addEventListener("keypress", (event) => {
+document.querySelector("#watchlist-ticker").addEventListener("keypress", (event) => {
   let key = event.key;
   if (!key.match(/[A-Za-z,.\-]/)) {
       event.preventDefault();
@@ -31,5 +31,5 @@ document.querySelector("#ticker").addEventListener("keypress", (event) => {
 </script>
 
 <script>
-  {% include "js/search.js" %}
+  {% include "js/watchlist.js" %}
 </script>
