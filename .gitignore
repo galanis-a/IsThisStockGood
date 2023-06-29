@@ -4,3 +4,6 @@ env/
 
 # For Pycharm
 .idea
+
+/__pycache__
+*.db
