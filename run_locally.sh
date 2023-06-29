@@ -1,5 +1,3 @@
 #!/bin/bash
 
-virtualenv flask
-source flask/Scripts/activate
-python3 main.py
+FLASK_APP=routes.py FLASK_DEBUG=1 FLASK_ENV=development flask run
