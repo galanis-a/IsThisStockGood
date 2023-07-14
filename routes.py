@@ -144,7 +144,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/watchlist", methods=("GET", "POST"), strict_slashes=False)
+@app.route("/watchlist", methods=("GET", "POST", "DELETE"), strict_slashes=False)
 @login_required
 def watchlist():
     if request.method == "POST":
@@ -156,7 +156,42 @@ def watchlist():
             db.session.add(newWatchlist)
             db.session.commit()
         else:
-            watchlist.symbols = f"{watchlist.symbols},{symbol}"
+            symbols = watchlist.symbols.split(",")
+            symbols.append(symbol)
+            symbols = list(dict.fromkeys(symbols))
+            watchlist.symbols = ','.join(symbols)
+            db.session.add(watchlist)
+            db.session.commit()
+
+        return Response(
+            response=json.dumps(
+                {
+                    "success": True
+                }
+            ),
+            status=200,
+            mimetype="application/json"
+        )
+    elif request.method == "DELETE":
+        symbol = request.values.get('ticker')
+        watchlist = Watchlist.query.filter_by(userid=current_user.id).first()
+        if watchlist is not None:
+            symbols = watchlist.symbols.split(",")
+            try:
+                symbols.remove(symbol)
+            except ValueError:
+                return Response(
+                    response=json.dumps(
+                        {
+                            "success": False,
+                            "error": f"Symbol {symbol} is not in your watchlist."
+                        }
+                    ),
+                    status=404,
+                    mimetype="application/json"
+                )
+
+            watchlist.symbols = ",".join(symbols)
             db.session.add(watchlist)
             db.session.commit()
 

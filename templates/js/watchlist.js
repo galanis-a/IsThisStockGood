@@ -86,7 +86,7 @@ function getWatchlist() {
 }
 
 function addWatchlistHtml(tickers) {
-    $("#ticker-list").html("");
+    $("#ticker-list").empty();
 
     tickers.split(",").forEach((ticker) => {
         addTickerHtml(ticker)
@@ -95,7 +95,14 @@ function addWatchlistHtml(tickers) {
 
 function addTickerHtml(ticker) {
     let list = $("#ticker-list");
-    list.append(`<a href="#" class="list-group-item watchlist-ticker">${ticker}</a>`);
+    list.append(`<div class="list-group-item">
+        <a href="#" class="watchlist-ticker">${ticker}</a>
+        <button type="button" class="btn btn-danger watchlist-delete" data-symbol="${ticker}"><span class="material-icons">delete</span></button>
+    </div>`);
+}
+
+function removeTickerHtml(ticker) {
+    $(`button[data-symbol=${ticker}]`).parent().remove();
 }
 
 function addWatchlistTickerEvents() {
@@ -104,5 +111,35 @@ function addWatchlistTickerEvents() {
 
         $('#ticker').val(e.target.text);
         $('#searchboxform').submit();
+    })
+
+    $('.watchlist-delete').click((e) => {
+        e.preventDefault();
+        let ticker = $(e.currentTarget).data("symbol");
+
+        $.ajax({
+            url: '/watchlist',
+            type: 'DELETE',
+            dataType: 'json',
+            data: {ticker: ticker},
+            success: (response) => {
+                if (response['error']) {
+                $.snackbar({
+                    content: response['error'],
+                    style: 'toast',
+                    timeout: 3500
+                });
+                return;
+            }
+            removeTickerHtml(ticker);
+            },
+            error: (response) => {
+                $.snackbar({
+                    content: `There was an error deleting the symbol from watchlist. Code ${response.status}`,
+                    style: 'toast',
+                    timeout: 3500
+                });
+            }
+        });
     })
 }

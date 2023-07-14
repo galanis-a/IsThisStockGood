@@ -1,25 +1,26 @@
 <div class="container pt-4" id="watchlist">
+    <h3>Watchlist</h3>
     {% if current_user.is_authenticated %}
-  <form id="watchlistform" action="/watchlist" method="post">
-    <div class="form-group row justify-content-center">
-      <div class="col-md-9 nopadding">
-        <input
-            type="text"
-            class="form-control"
-            id="watchlist-ticker"
-            placeholder="Ticker Symbol"
-            maxlength=5
-            onkeydown="return validateInput(event)"/>
-      </div>
-      <div class="col-md-3 nopadding">
-        <input
-            type="submit"
-            value="Add"
-            class="btn btn-raised btn-md btn-primary"
-        >
-      </div>
-    </div>
-  </form>
+        <form id="watchlistform" action="/watchlist" method="post">
+            <div class="form-group row justify-content-center">
+                <div class="col-md-9 nopadding">
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="watchlist-ticker"
+                            placeholder="Ticker Symbol"
+                            maxlength=5
+                            onkeydown="return validateInput(event)"/>
+                </div>
+                <div class="col-md-3 nopadding">
+                    <input
+                            type="submit"
+                            value="Add"
+                            class="btn btn-raised btn-md btn-primary"
+                    >
+                </div>
+            </div>
+        </form>
         <div id="ticker-list" class="list-group"></div>
     {% else %}
         <p>Please login to manage your watchlist</p>
@@ -27,14 +28,14 @@
 </div>
 
 <script>
-document.querySelector("#watchlist-ticker").addEventListener("keypress", (event) => {
-  let key = event.key;
-  if (!key.match(/[A-Za-z,.\-]/)) {
-      event.preventDefault();
-    }
-});
+    document.querySelector("#watchlist-ticker").addEventListener("keypress", (event) => {
+        let key = event.key;
+        if (!key.match(/[A-Za-z,.\-]/)) {
+            event.preventDefault();
+        }
+    });
 </script>
 
 <script>
-  {% include "js/watchlist.js" %}
+    {% include "js/watchlist.js" %}
 </script>
