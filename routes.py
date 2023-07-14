@@ -12,6 +12,7 @@ from flask_login import (
     login_user,
     logout_user,
     login_required,
+    current_user
 )
 from sqlalchemy.exc import (
     IntegrityError,
@@ -24,7 +25,7 @@ from werkzeug.routing import BuildError
 
 from app import create_app, db, login_manager, bcrypt
 from forms import login_form, register_form
-from models import User
+from models import User, Watchlist
 from src.DataFetcher import fetchDataForTickerSymbol
 
 
@@ -39,7 +40,7 @@ app = create_app()
 @app.before_request
 def session_handler():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=1)
+    app.permanent_session_lifetime = timedelta(minutes=30)
 
 
 @app.route('/')
@@ -75,7 +76,7 @@ def login():
             user = User.query.filter_by(email=form.email.data).first()
             if check_password_hash(user.pwd, form.pwd.data):
                 login_user(user)
-                return redirect(url_for('index'))
+                return redirect(url_for('homepage'))
             else:
                 flash("Invalid Username or password!", "danger")
         except Exception as e:
@@ -145,18 +146,30 @@ def logout():
 
 @app.route("/watchlist", methods=("GET", "POST"), strict_slashes=False)
 @login_required
-def add_to_watchlist():
-    symbol = request.values.get('ticker')
-    app.logger.info(symbol)
-    return Response(
-        response=json.dumps({
-            "data": {
-                "success": True
-            }
-        }),
-        status=200,
-        mimetype="application/json"
-    )
+def watchlist():
+    if request.method == "POST":
+        symbol = request.values.get('ticker')
+        app.logger.info(symbol)
+        return Response(
+            response=json.dumps(
+                {
+                    "success": True
+                }
+            ),
+            status=200,
+            mimetype="application/json"
+        )
+    else:
+        data = Watchlist.query.filter_by(userid=current_user.id).first()
+
+        return Response(
+            response=json.dumps({
+                "success": True,
+                "data": data.symbols
+            }),
+            status=200,
+            mimetype="application/json"
+        )
 
 
 if __name__ == '__main__':

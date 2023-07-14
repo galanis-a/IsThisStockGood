@@ -1,4 +1,6 @@
 $(document).ready(function() {
+  getWatchlist();
+
   $("#watchlistform").submit(function(event) {
 
     const loader = document.querySelector("popup-loading");
@@ -50,3 +52,47 @@ $(document).ready(function() {
     });
   });
 });
+
+function getWatchlist() {
+  let getWatchlist = $.get("/watchlist");
+  getWatchlist.fail(function (response) {
+    $.snackbar({
+          content: `Could not get watchlist. Code ${response.status}`,
+          style: 'toast',
+          timeout: 3500
+        });
+        return;
+  });
+
+  getWatchlist.done(function(data) {
+      if (data['error']) {
+        $.snackbar({
+          content: data['error'],
+          style: 'toast',
+          timeout: 3500
+        });
+        return;
+      }
+
+      addWatchlistHtml(data.data)
+      addWatchlistTickerEvents()
+    });
+}
+
+function addWatchlistHtml(tickers) {
+    let list = $("#ticker-list");
+    list.html("");
+
+    tickers.split(",").forEach((ticker) => {
+        list.append(`<a href="#" class="list-group-item watchlist-ticker">${ticker}</a>`);
+    })
+}
+
+function addWatchlistTickerEvents() {
+    $('.watchlist-ticker').click((e) => {
+      e.preventDefault();
+
+      $('#ticker').val(e.target.text);
+      $('#searchboxform').submit();
+  })
+}
