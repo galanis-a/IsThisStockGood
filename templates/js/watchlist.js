@@ -33,8 +33,7 @@ $(document).ready(function() {
         return;
     })
     // Update the HTML with the results.
-    posting.done(function(json_data) {
-      data = JSON.parse(json_data);
+    posting.done(function(data) {
       if (data['error']) {
         $.snackbar({
           content: data['error'],

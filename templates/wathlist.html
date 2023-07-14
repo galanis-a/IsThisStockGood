@@ -1,4 +1,5 @@
 <div class="container pt-4" id="watchlist">
+    {% if current_user.is_authenticated %}
   <form id="watchlistform" action="/watchlist" method="post">
     <div class="form-group row justify-content-center">
       <div class="col-md-9 nopadding">
@@ -19,6 +20,9 @@
       </div>
     </div>
   </form>
+    {% else %}
+        <p>Please login to manage your watchlist</p>
+    {% endif %}
 </div>
 
 <script>
