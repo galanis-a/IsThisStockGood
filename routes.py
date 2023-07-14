@@ -137,7 +137,7 @@ def register():
                            )
 
 
-@app.route("/logout")
+@app.route("/logout", strict_slashes=False)
 @login_required
 def logout():
     logout_user()
