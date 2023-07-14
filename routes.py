@@ -149,7 +149,17 @@ def logout():
 def watchlist():
     if request.method == "POST":
         symbol = request.values.get('ticker')
-        app.logger.info(symbol)
+        watchlist = Watchlist.query.filter_by(userid=current_user.id).first()
+
+        if watchlist is None:
+            newWatchlist = Watchlist(userid=current_user.id, symbols   =symbol)
+            db.session.add(newWatchlist)
+            db.session.commit()
+        else:
+            watchlist.symbols = f"{watchlist.symbols},{symbol}"
+            db.session.add(watchlist)
+            db.session.commit()
+
         return Response(
             response=json.dumps(
                 {
@@ -165,7 +175,7 @@ def watchlist():
         return Response(
             response=json.dumps({
                 "success": True,
-                "data": data.symbols
+                "data": data.symbols if data is not None else ""
             }),
             status=200,
             mimetype="application/json"
