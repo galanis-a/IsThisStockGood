@@ -14,6 +14,7 @@ from flask_login import (
     login_required,
     current_user
 )
+from flask_wtf.csrf import generate_csrf
 from sqlalchemy.exc import (
     IntegrityError,
     DataError,
@@ -43,6 +44,12 @@ app = create_app()
 def session_handler():
     session.permanent = True
     app.permanent_session_lifetime = timedelta(minutes=30)
+
+@app.after_request
+def add_csrf_cookie(response: Response):
+    if response.status_code in range(200, 400) and not response.direct_passthrough:
+        response.set_cookie("csrftoken", generate_csrf(), secure=True)
+    return response
 
 
 @app.route('/')

@@ -21,39 +21,44 @@ $(document).ready(function () {
         // Start loading
         loader.show();
 
-        // Post the data to the path.
-        let posting = $.post(path, {ticker: $ticker});
+        $.ajax({
+            url: path,
+            type: 'POST',
+            dataType: 'json',
+            data: {ticker: $ticker},
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            },
+            success: (response) => {
+                if (response['error']) {
+                    $.snackbar({
+                        content: response['error'],
+                        style: 'toast',
+                        timeout: 3500
+                    });
+                    // Hide loading
+                    loader.hide();
+                    return;
+                }
 
-        posting.fail(function (response) {
-            $.snackbar({
-                content: `There was an error. Code ${response.status}`,
-                style: 'toast',
-                timeout: 3500
-            });
-            // Hide loading
-            loader.hide();
-        })
-        // Update the HTML with the results.
-        posting.done(function (data) {
-            if (data['error']) {
+                // Hide loading
+                loader.hide();
+                addTickerHtml($ticker)
                 $.snackbar({
-                    content: data['error'],
+                    content: "Ticker added to watchlist",
+                    style: 'toast',
+                    timeout: 3500
+                });
+            },
+            error: (response) => {
+                $.snackbar({
+                    content: `There was an error. Code ${response.status}`,
                     style: 'toast',
                     timeout: 3500
                 });
                 // Hide loading
                 loader.hide();
-                return;
             }
-
-            // Hide loading
-            loader.hide();
-            addTickerHtml($ticker)
-            $.snackbar({
-                content: "Ticker added to watchlist",
-                style: 'toast',
-                timeout: 3500
-            });
         });
     });
 });
@@ -120,16 +125,19 @@ function addWatchlistTickerEvents() {
             type: 'DELETE',
             dataType: 'json',
             data: {ticker: ticker},
+            headers: {
+                "X-CSRFToken": getCSRFToken()
+            },
             success: (response) => {
                 if (response['error']) {
-                $.snackbar({
-                    content: response['error'],
-                    style: 'toast',
-                    timeout: 3500
-                });
-                return;
-            }
-            removeTickerHtml(ticker);
+                    $.snackbar({
+                        content: response['error'],
+                        style: 'toast',
+                        timeout: 3500
+                    });
+                    return;
+                }
+                removeTickerHtml(ticker);
             },
             error: (response) => {
                 $.snackbar({
