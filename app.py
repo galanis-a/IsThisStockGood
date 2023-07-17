@@ -9,6 +9,7 @@ from flask_login import (
 )
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 
 login_manager = LoginManager()
 login_manager.session_protection = "strong"
@@ -29,6 +30,8 @@ handler.setFormatter(h_format)
 
 logger.addHandler(handler)
 
+csrf = CSRFProtect()
+
 
 def create_app():
     app = Flask(__name__)
@@ -41,5 +44,6 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
+    csrf.init_app(app)
 
     return app

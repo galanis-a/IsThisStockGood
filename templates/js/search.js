@@ -32,11 +32,11 @@ $(document).ready(function() {
 
     // Extract the URL path for the action.
     let $form = $(this);
-    path = $form.attr('action');
+    const path = $form.attr('action');
 
     // Extract the ticker symbol.
     let $ticker = $('#ticker').val();
-    if ($ticker.length == 0) {
+    if ($ticker.length === 0) {
       return;
     }
 
@@ -54,11 +54,10 @@ $(document).ready(function() {
         });
         // Hide loading
         loader.hide();
-        return;
     })
     // Update the HTML with the results.
     posting.done(function(json_data) {
-      data = JSON.parse(json_data);
+      const data = JSON.parse(json_data);
       if (data['error']) {
         $.snackbar({
           content: data['error'],
@@ -133,7 +132,7 @@ $(document).ready(function() {
 });
 
 function updateHtmlWithValueForKey(data, key, commas) {
-  value = data[key];
+  let value = data[key];
   if (value === null) {
     $('#' + key).html('Undefined');
     return;
@@ -158,10 +157,10 @@ function updateBigFiveHtmlWithDataForKey(data, key) {
     $(element_id).html(value);
 
     if (value == '-') {
-      color = (i == 0) ? Color.red() :  Color.white();
+      const color = (i == 0) ? Color.red() :  Color.white();
       $(element_id).css('background-color', color);
     } else {
-      colorCellWithIDForRange(element_id, [0, 5, 10], true);
+      colorCellWithIDForRange(element_id, [0, 5, 10]);
     }
   }
 }
@@ -174,7 +173,7 @@ function colorCellWithIDForRange(id, range) {
     if (range.length != 3) {
       return;
     }
-    value = $(id).html();
+    const value = $(id).html();
     let backgroundColor = Color.red();
     if (value >= range[2]) {
       backgroundColor = Color.green();
@@ -190,7 +189,7 @@ function colorCellWithIDForZeroBasedRange(id, range) {
     if (range.length != 3) {
       return;
     }
-    value = $(id).html();
+    const value = $(id).html();
     if (value == -1) {
       $(id).text('-');
       colorCellWithBackgroundColor(id, Color.white());

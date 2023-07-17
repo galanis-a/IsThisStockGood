@@ -28,6 +28,8 @@ from forms import login_form, register_form
 from models import User, Watchlist
 from src.DataFetcher import fetchDataForTickerSymbol
 
+MIMETYPE = "application/json"
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -108,27 +110,27 @@ def register():
 
             db.session.add(newuser)
             db.session.commit()
-            flash(f"Account Successfully created", "success")
+            flash("Account Successfully created", "success")
             return redirect(url_for("login"))
 
         except InvalidRequestError:
             db.session.rollback()
-            flash(f"Something went wrong!", "danger")
+            flash("Something went wrong!", "danger")
         except IntegrityError:
             db.session.rollback()
-            flash(f"User already exists!.", "warning")
+            flash("User already exists!.", "warning")
         except DataError:
             db.session.rollback()
-            flash(f"Invalid Entry", "warning")
+            flash("Invalid Entry", "warning")
         except InterfaceError:
             db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
+            flash("Error connecting to the database", "danger")
         except DatabaseError:
             db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
+            flash("Error connecting to the database", "danger")
         except BuildError:
             db.session.rollback()
-            flash(f"An error occured !", "danger")
+            flash("An error occurred !", "danger")
     return render_template("auth.html",
                            form=form,
                            text="Create account",
@@ -152,8 +154,8 @@ def watchlist():
         watchlist = Watchlist.query.filter_by(userid=current_user.id).first()
 
         if watchlist is None:
-            newWatchlist = Watchlist(userid=current_user.id, symbols   =symbol)
-            db.session.add(newWatchlist)
+            new_watchlist = Watchlist(userid=current_user.id, symbols=symbol)
+            db.session.add(new_watchlist)
             db.session.commit()
         else:
             symbols = watchlist.symbols.split(",")
@@ -170,7 +172,7 @@ def watchlist():
                 }
             ),
             status=200,
-            mimetype="application/json"
+            mimetype=MIMETYPE
         )
     elif request.method == "DELETE":
         symbol = request.values.get('ticker')
@@ -188,7 +190,7 @@ def watchlist():
                         }
                     ),
                     status=404,
-                    mimetype="application/json"
+                    mimetype=MIMETYPE
                 )
 
             watchlist.symbols = ",".join(symbols)
@@ -202,7 +204,7 @@ def watchlist():
                 }
             ),
             status=200,
-            mimetype="application/json"
+            mimetype=MIMETYPE
         )
     else:
         data = Watchlist.query.filter_by(userid=current_user.id).first()
@@ -213,7 +215,7 @@ def watchlist():
                 "data": data.symbols if data is not None else ""
             }),
             status=200,
-            mimetype="application/json"
+            mimetype=MIMETYPE
         )
 
 

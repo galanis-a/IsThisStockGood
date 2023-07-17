@@ -10,7 +10,7 @@ $(document).ready(function () {
 
         // Extract the URL path for the action.
         let $form = $(this);
-        path = $form.attr('action');
+        const path = $form.attr('action');
 
         // Extract the ticker symbol.
         let $ticker = $('#watchlist-ticker').val();
@@ -32,7 +32,6 @@ $(document).ready(function () {
             });
             // Hide loading
             loader.hide();
-            return;
         })
         // Update the HTML with the results.
         posting.done(function (data) {
@@ -67,7 +66,6 @@ function getWatchlist() {
             style: 'toast',
             timeout: 3500
         });
-        return;
     });
 
     getWatchlist.done(function (data) {
